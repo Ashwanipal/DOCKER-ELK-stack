@@ -1,7 +1,7 @@
 FROM ubuntu:14.04
 RUN apt-get update && apt-get install -y wget curl net-tools
 RUN apt-get install nginx apache2-utils -y
-RUN htpasswd -b -c /etc/nginx/htpasswd.users kibanaadmin ankur
+RUN htpasswd -b -c /etc/nginx/htpasswd.users kibanaadmin PASSWORD
 COPY ./ELK/config/nginx.default /etc/nginx/sites-available/default
 
 #COPY ./dockerised-java/target/DockerExample.war /opt/tomcat/webapps/DockerExample.war
