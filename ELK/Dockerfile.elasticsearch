@@ -1,0 +1,26 @@
+FROM ubuntu:14.04
+
+RUN apt-get update && \
+    apt-get install -y net-tools curl wget gnupg
+
+#### Install JAVA 8 ####
+
+RUN apt-get install -y  software-properties-common && \
+    add-apt-repository ppa:webupd8team/java -y && \
+    apt-get update && \
+    echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
+    apt-get install -y oracle-java8-installer && apt-get clean
+
+#### Install elasticsearch ####
+
+RUN apt-get install apt-transport-https
+RUN wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add - && \
+    echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | tee -a /etc/apt/sources.list.d/elk.list && \
+    apt-get update && apt-get install -y elasticsearch
+
+RUN sed -i 's/#network.host: 192.168.0.1/network.host: 0.0.0.0/g' /etc/elasticsearch/elasticsearch.yml
+
+#    sed -i 's/#http.port: 9200/http.port: 9200/g' /etc/elasticsearch/elasticsearch.yml
+#### Load Filebeat Index Template in Elasticsearch ####
+#RUN curl -O https://gist.githubusercontent.com/thisismitch/3429023e8438cc25b86c/raw/d8c479e2a1adcea8b1fe86570e42abab0f10f364/filebeat-index-template.json
+#curl -XPUT 'http://localhost:9200/_template/filebeat?pretty' -d@filebeat-index-template.json

@@ -1,0 +1,8 @@
+input {
+  beats {
+    port => 5044
+    ssl => true
+    ssl_certificate => "/etc/ssl-elk/certs/logstash-forwarder.crt"
+    ssl_key => "/etc/ssl-elk/private/logstash-forwarder.key"
+  }
+}
