@@ -26,7 +26,7 @@ openssl req -x509 -days 365 -batch -nodes -newkey rsa:2048 -keyout logstash-forw
 cp /etc/ssl/logstash-forwarder.crt $YOUR_HOME/DOCKER-ELK-stack/ELK/ssl/certs/logstash-forwarder.crt
 cp /etc/ssl/logstash-forwarder.key $YOUR_HOME/DOCKER-ELK-stack/ELK/ssl/private/logstash-forwarder.key
 ```
-### Step 2: Configure the cradentials for kibana
+### Step 2: Configure the credentials for kibana
    * Open file and replace the PASSWORD string with your password:
 ```sh
 vi ELK/Dockerfile.nginx
