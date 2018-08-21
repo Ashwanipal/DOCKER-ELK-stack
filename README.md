@@ -83,7 +83,9 @@ docker-compose -f ELK/elk-stack.yml up -d
   * Access your newly created Kibana dashboard with url http://YOUR_SERVER_IP
   * Enter USER_NAME kibanaadmin and your PASSWORD
 
-
+### Step 5: Now your ELK stack is up and running to configure Index name or pattern go through the below link
+  * Refrance: https://www.itzgeek.com/how-tos/linux/ubuntu-how-tos/setup-elk-stack-ubuntu-16-04.html
+  * Cheers!!
 
 
 
