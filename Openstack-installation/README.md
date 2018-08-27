@@ -2,19 +2,19 @@
 
 Follow the steps to Install Openstack cloud in your local BOX
 
-### Minimum Requirments are -
+### Minimum Requirments are:
     * Support Ubuntu 16.04/17.04, Fedora 24/25, CentOS/RHEL 7
     * 8 GB of memory
     * At least 50GB of storage
 
-### Step 1: Stop the firewall in your Operating system
+### Step 1: Stop the firewall in your Operating system:
 
 
-### Step 2: Create a user "stack" to run DevStack
+### Step 2: Create a user "stack" to run DevStack:
 ```sh
 sudo useradd -s /bin/bash -d /opt/stack -m stack
 ```
-### Step 3: Grant privileges to user stack
+### Step 3: Grant privileges to user stack:
 ```sh
 echo "stack ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/stack
 ```
