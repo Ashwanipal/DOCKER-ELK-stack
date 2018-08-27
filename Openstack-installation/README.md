@@ -4,7 +4,7 @@
 
 Follow the steps to Install Openstack cloud in your local BOX
 
-### Minimum Requirments are:
+### Minimum Requirements are:
     * Support Ubuntu 16.04/17.04, Fedora 24/25, CentOS/RHEL 7
     * 8 GB of memory
     * At least 50GB of storage
