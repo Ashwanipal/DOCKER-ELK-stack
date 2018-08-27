@@ -37,7 +37,7 @@ git clone https://github.com/openstack-dev/devstack.git -b stable/pike devstack/
 cd devstack
 ```
 
-### Step 6: Create the local.conf file with password and your host IPp:
+### Step 6: Create the local.conf file with password and your host IP:
 ```sh
 cat >  local.conf <<EOF
 [[local|localrc]]
