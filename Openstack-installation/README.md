@@ -1,3 +1,5 @@
+<a href="https://github.com/Ashwanipal/DOCKER-ELK-stack"><img align="right" width="280" height="220" src="https://goo.gl/images/6WvsJP" /></a>
+
 ## How to install OpenStack on your local machine using Devstack
 
 Follow the steps to Install Openstack cloud in your local BOX
