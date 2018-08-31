@@ -21,9 +21,12 @@ Follow the steps to create your own Openstack multinode cloud
 ```sh
 apt install chrony
 
-vi /etc/chrony/chrony.conf
->>  server CONTROLLER_IP iburst               ## Add the configuration
-    allow 192.168.0.0/24
+vi /etc/chrony/chrony.conf                    ## Remove all the configuration from /etc/chrony/chrony.conf and add the following
+>>  server 192.168.33.20 iburst               ## Add your Controller server IP
+    server 192.168.33.21 iburst               ## Add your Compute server IP
+    server 192.168.33.22 iburst               ## Add your Storage server IP
+    allow 192.0.0.0/24
+
 
 service chrony restart
 ```
@@ -31,8 +34,8 @@ service chrony restart
 ```sh
 apt install chrony
 
-vi /etc/chrony/chrony.conf
->> server 192.168.33.10 iburst ## Add the controller node IP address
+vi /etc/chrony/chrony.conf                    ## Remove all the configuration from /etc/chrony/chrony.conf and add the following
+>> server 192.168.33.10 iburst                ## Add your Controller server IP
 
 service chrony restart
 ```
