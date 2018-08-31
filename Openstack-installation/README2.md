@@ -50,45 +50,21 @@ chronyc sources
 ```
 Run the same command on all other nodes:
 
-### Step 3: Grant privileges to user stack:
+### Step 3: OpenStack packages(Perform these procedures on all nodes)
 ```sh
-echo "stack ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/stack
+apt install software-properties-common    ## Enable the OpenStack repository
+add-apt-repository cloud-archive:newton   
+apt update && apt dist-upgrade            ## Upgrade the packages on your host
+apt install python-openstackclient        ## Install the OpenStack client
 ```
-You should see output
+### Step 4: SQL database(Perform these procedures on controller node)
 ```sh
-stack ALL=(ALL) NOPASSWD: ALL
-```
+apt install mysql-server python-pymysql   ## Install the packages & set the suitable password for your MySQL server
 
-### Step 4: Switch user and Download DevStack:
+vi vi /etc/mysql/mysql.conf.d/mysqld.cnf 
+>> bind-address = 0.0.0.0                 ## Change the bind address
 
-```sh
-sudo su - stack
-```
-```sh
-git clone https://github.com/openstack-dev/devstack.git -b stable/pike devstack/
-```
-
-### Step 5: Change to the devstack directory:
-```sh
-cd devstack
-```
-
-### Step 6: Create the local.conf file with password and your host IP:
-```sh
-cat >  local.conf <<EOF
-[[local|localrc]]
-ADMIN_PASSWORD=secret
-DATABASE_PASSWORD=\$ADMIN_PASSWORD
-RABBIT_PASSWORD=\$ADMIN_PASSWORD
-SERVICE_PASSWORD=\$ADMIN_PASSWORD
-HOST_IP=10.0.2.15
-RECLONE=yes
-EOF
-```
-
-### Now install and run OpenStack:
-```sh
-./stack.sh
+service mysql restart                     ## Restart the database service
 ```
 
 ### Access your OpenStack by  URL:
