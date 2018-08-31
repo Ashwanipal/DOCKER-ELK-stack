@@ -196,5 +196,5 @@ $ openstack image list
 +--------------------------------------+--------+--------+
 ```
 ## Now your servers are ready to install and configure Openstack Compute service
-<a href="https://github.com/Ashwanipal/DOCKER-ELK-stack/blob/master/Openstack-installation/Compute_service.md"> 2: Compute service </a>
+<a href="https://github.com/Ashwanipal/DOCKER-ELK-stack/blob/master/Openstack-installation/Compute_service.md"> Compute service </a>
  
