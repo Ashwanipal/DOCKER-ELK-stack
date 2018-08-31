@@ -1,104 +1,151 @@
-<a href="https://github.com/Ashwanipal/DOCKER-ELK-stack"><img align="right" width="280" height="220" src="https://github.com/Ashwanipal/Shell-scripts/blob/master/2000px-The_OpenStack_logo.svg.png" /></a>
+## Image service
+The OpenStack Image service is central to Infrastructure-as-a-Service (IaaS) as shown in Conceptual architecture. It accepts API requests for disk or server images, and metadata definitions from end users or OpenStack Compute components. It also supports the storage of disk or server images on various repository types, including OpenStack Object Storage
 
-## This tutorial contains Creation & management of OpenStack multinode architecture 
+### Follow the steps to setup Openstack image service on the controller node
 
-Follow the steps to create your own Openstack multinode cloud
-
-### Requirements:
-   * It can be your virtual machines & you can creat VM's using vagrant
-   * Support Ubuntu 16.04/14.04
-   * Controller Node: 4GB of RAM & 20GB storage
-   * Compute Node: 6GB of RAM & 20GB storage
-   * Storage Node: 2GB of RAM & 20GB storage
-
-### Step 1: Stop the firewall in your Operating system:
-
-### Step 2: Install Chrony for implementation of NTP, to properly synchronize services among nodes
-  * IP address of Controller Node:  192.168.33.10
-  * IP address of Compute Node:     192.168.33.11
-  * IP address of Storage Node:     192.168.33.12
-#### Install and configure components in controller node:
+### Step 1: Create the database and Grant proper access to the glance database:
 ```sh
-apt install chrony
+$ mysql -u root -p
 
-vi /etc/chrony/chrony.conf
->> server NTP_SERVER iburst ## Add the configuration
+mysql> CREATE DATABASE glance;
 
-vi /etc/chrony/chrony.conf
->> allow 192.168.33.0/24 ## Add the configuration
-
-service chrony restart
+mysql> GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' IDENTIFIED BY 'GLANCE_DBPASS';
+mysql> GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' IDENTIFIED BY 'GLANCE_DBPASS';
 ```
-#### Perform these steps on all other nodes.
+### Step 2: Source the admin credentials to gain access to admin-only CLI commands
 ```sh
-apt install chrony
-
-vi /etc/chrony/chrony.conf
->> server 192.168.33.10 iburst ## Add the controller node IP address
-
-service chrony restart
+. admin-openrc
 ```
-#### Verify operation
+### Step 3: Create the service credentials
+* Create the glance user:
 ```sh
-chronyc sources
+$ openstack user create --domain default --password-prompt glance
 
-  210 Number of sources = 2
-  MS Name/IP address         Stratum Poll Reach LastRx Last sample
-  ===============================================================================
-  ^- 192.168.33.10                    2   7    12   137  -2814us[-3000us] +/-   43ms
-  ^* 192.168.33.11                    2   6   177    46    +17us[  -23us] +/-   68ms
+User Password:
+Repeat User Password:
++---------------------+----------------------------------+
+| Field               | Value                            |
++---------------------+----------------------------------+
+| domain_id           | default                          |
+| enabled             | True                             |
+| id                  | 3f4e777c4062483ab8d9edd7dff829df |
+| name                | glance                           |
+| password_expires_at | None                             |
++---------------------+----------------------------------+
 ```
-Run the same command on all other nodes:
-
-### Step 3: OpenStack packages (Perform these procedures on all nodes)
+* Add the admin role to the glance user and service project:
 ```sh
-apt install software-properties-common    ## Enable the OpenStack repository
-add-apt-repository cloud-archive:newton   
-
-apt update && apt dist-upgrade            ## Upgrade the packages on your host
-
-apt install python-openstackclient        ## Install the OpenStack client
+openstack role add --project service --user glance admin
 ```
-### Step 4: SQL database (Perform these procedures on controller node)
+* Create the glance service entity:
 ```sh
-apt install mysql-server python-pymysql   ## Install the packages & set the suitable password for your MySQL server
+$ openstack service create --name glance --description "OpenStack Image" image
 
-vi /etc/mysql/mysql.conf.d/mysqld.cnf 
->> bind-address = 0.0.0.0                 ## Change the bind address
-
-service mysql restart                     ## Restart the database service
++-------------+----------------------------------+
+| Field       | Value                            |
++-------------+----------------------------------+
+| description | OpenStack Image                  |
+| enabled     | True                             |
+| id          | 8c2c7f1b9b5049ea9e63757b5533e6d2 |
+| name        | glance                           |
+| type        | image                            |
++-------------+----------------------------------+
 ```
-### Step 5: Message queue (Install and configure components on controller node)
+
+### Step 4: Create the Image service API endpoints:
 ```sh
-apt install rabbitmq-server                 ## Install the package
+$ openstack endpoint create --region RegionOne \
+  image public http://controller:9292
 
-rabbitmqctl add_user openstack RABBIT_PASS  ## Add the openstack user: 
-OUTPUT >> Creating user "openstack" ...
++--------------+----------------------------------+
+| Field        | Value                            |
++--------------+----------------------------------+
+| enabled      | True                             |
+| id           | 340be3625e9b4239a6415d034e98aace |
+| interface    | public                           |
+| region       | RegionOne                        |
+| region_id    | RegionOne                        |
+| service_id   | 8c2c7f1b9b5049ea9e63757b5533e6d2 |
+| service_name | glance                           |
+| service_type | image                            |
+| url          | http://controller:9292           |
++--------------+----------------------------------+
 
-rabbitmqctl set_permissions openstack ".*" ".*" ".*"
-OUTPUT >> Setting permissions for user "openstack" in vhost "/" ...
+$ openstack endpoint create --region RegionOne \
+  image internal http://controller:9292
+
++--------------+----------------------------------+
+| Field        | Value                            |
++--------------+----------------------------------+
+| enabled      | True                             |
+| id           | a6e4b153c2ae4c919eccfdbb7dceb5d2 |
+| interface    | internal                         |
+| region       | RegionOne                        |
+| region_id    | RegionOne                        |
+| service_id   | 8c2c7f1b9b5049ea9e63757b5533e6d2 |
+| service_name | glance                           |
+| service_type | image                            |
+| url          | http://controller:9292           |
++--------------+----------------------------------+
+
+$ openstack endpoint create --region RegionOne \
+  image admin http://controller:9292
+
++--------------+----------------------------------+
+| Field        | Value                            |
++--------------+----------------------------------+
+| enabled      | True                             |
+| id           | 0c37ed58103f4300a84ff125a539032d |
+| interface    | admin                            |
+| region       | RegionOne                        |
+| region_id    | RegionOne                        |
+| service_id   | 8c2c7f1b9b5049ea9e63757b5533e6d2 |
+| service_name | glance                           |
+| service_type | image                            |
+| url          | http://controller:9292           |
++--------------+----------------------------------+
 ```
-### Step 5: Memcached (Install and configure components on controller node)
+### Step 5: Install and configure components
+*  Install the packages:
 ```sh
-apt install memcached python-memcache       ## Install the packages
+$ apt install glance
+```
+* Edit the /etc/glance/glance-api.conf file and complete the following actions:
+```sh
+[database]                                                              ## configure database access in [database] section
+...
+connection = mysql+pymysql://glance:GLANCE_DBPASS@CONTROLLER_IP/glance
 
-vi /etc/memcached.conf                      ## Configure memcached by editing configuration file
->> -l 192.168.33.10                         ## Add the IP address of ypur controller node
+[keystone_authtoken]                                                    ## Configure Identity service access
+auth_uri = http://CONTROLLER_IP:5000
+auth_url = http://CONTROLLER_IP:35357
+memcached_servers = CONTROLLER_IP:11211
+auth_type = password
+project_domain_name = Default
+user_domain_name = Default
+project_name = service
+username = glance
+password = GLANCE_PASS
 
-service memcached restart                   ## Restart the Memcached service:
+[paste_deploy]                                                          ## Configure Identity service access
+...
+flavor = keystone
+
+[glance_store]                                                          ## configure the local file system store image files:
+...
+stores = file,http
+default_store = file
+filesystem_store_datadir = /var/lib/glance/images/
+
+```
+
+### Step 5: 
+```sh
+
 ```
 
 ## Now your servers are ready to install and configure Openstack services
-
-### To install services one by one please open the links
-
-  * <a href="#"> 1: Identity service </a>
-  * <a href="#"> 2: Image service </a>
-  * <a href="#"> 3: Compute service </a>
-  * <a href="#"> 4: Networking service </a>
-  * <a href="#"> 5: Dashboard </a>
-  * <a href="#"> 6: Block Storage service </a>
-
-### NOTE: Please make sure to follow the steps as mentioned here
+<a href="#"> 2: Image service </a>
+ 
 
 
