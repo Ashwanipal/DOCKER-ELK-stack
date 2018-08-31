@@ -1,13 +1,15 @@
 <a href="https://github.com/Ashwanipal/DOCKER-ELK-stack"><img align="right" width="280" height="220" src="https://github.com/Ashwanipal/Shell-scripts/blob/master/2000px-The_OpenStack_logo.svg.png" /></a>
 
-## How to install OpenStack on your local machine using Devstack
+## This tutorial contains Creation & management of OpenStack multinode architecture 
 
-Follow the steps to Install Openstack cloud in your local BOX
+Follow the steps to create your own Openstack multinode cloud
 
-### Minimum Requirements are:
-    * Support Ubuntu 16.04/17.04, Fedora 24/25, CentOS/RHEL 7
-    * 8 GB of memory
-    * At least 50GB of storage
+### Requirements:
+   * It can be your virtual machines & you can creat VM's using vagrant
+   * Support Ubuntu 16.04/14.04
+   * Controller Node: 4GB of RAM & 20GB storage
+   * Compute Node: 6GB of RAM & 20GB storage
+   * Storage Node: 2GB of RAM & 20GB storage
 
 ### Step 1: Stop the firewall in your Operating system:
 
