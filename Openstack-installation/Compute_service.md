@@ -63,7 +63,120 @@ $ openstack service create --name nova --description "OpenStack Compute" compute
 ### Step 3: Create the Compute service API endpoints
 * 
 ```sh
+$ openstack endpoint create --region RegionOne \
+  compute public http://CONTROLLER_IP:8774/v2.1/%\(tenant_id\)s
 
++--------------+-------------------------------------------+
+| Field        | Value                                     |
++--------------+-------------------------------------------+
+| enabled      | True                                      |
+| id           | 3c1caa473bfe4390a11e7177894bcc7b          |
+| interface    | public                                    |
+| region       | RegionOne                                 |
+| region_id    | RegionOne                                 |
+| service_id   | 060d59eac51b4594815603d75a00aba2          |
+| service_name | nova                                      |
+| service_type | compute                                   |
+| url          | http://CONTROLLER_IP:8774/v2.1/%(tenant_id)s |
++--------------+-------------------------------------------+
+
+$ openstack endpoint create --region RegionOne \
+  compute internal http://CONTROLLER_IP:8774/v2.1/%\(tenant_id\)s
+
++--------------+-------------------------------------------+
+| Field        | Value                                     |
++--------------+-------------------------------------------+
+| enabled      | True                                      |
+| id           | e3c918de680746a586eac1f2d9bc10ab          |
+| interface    | internal                                  |
+| region       | RegionOne                                 |
+| region_id    | RegionOne                                 |
+| service_id   | 060d59eac51b4594815603d75a00aba2          |
+| service_name | nova                                      |
+| service_type | compute                                   |
+| url          | http://CONTROLLER_IP:8774/v2.1/%(tenant_id)s |
++--------------+-------------------------------------------+
+
+$ openstack endpoint create --region RegionOne \
+  compute admin http://CONTROLLER_IP:8774/v2.1/%\(tenant_id\)s
+
++--------------+-------------------------------------------+
+| Field        | Value                                     |
++--------------+-------------------------------------------+
+| enabled      | True                                      |
+| id           | 38f7af91666a47cfb97b4dc790b94424          |
+| interface    | admin                                     |
+| region       | RegionOne                                 |
+| region_id    | RegionOne                                 |
+| service_id   | 060d59eac51b4594815603d75a00aba2          |
+| service_name | nova                                      |
+| service_type | compute                                   |
+| url          | http://CONTROLLER_IP:8774/v2.1/%(tenant_id)s |
++--------------+-------------------------------------------+
+```
+
+### Step 4: Install and configure components
+* Install the packages
+```sh
+$ apt install nova-api nova-conductor nova-consoleauth nova-novncproxy nova-scheduler
+```
+* Configure packages
+```sh
+[DEFAULT] 
+transport_url = rabbit://openstack:RABBIT_PASS@CONTROLLER_IP
+auth_strategy = keystone
+my_ip = CONTROLLER_IP
+use_neutron = True
+firewall_driver = nova.virt.firewall.NoopFirewallDriver
+
+
+[api_database]                                      ## In the [api_database] and [database] sections, configure database access
+...
+connection = mysql+pymysql://nova:NOVA_DBPASS@CONTROLLER_IP/nova_api
+
+[database]
+...
+connection = mysql+pymysql://nova:NOVA_DBPASS@CONTROLLER_IP/nova
+
+
+[keystone_authtoken]
+...
+auth_uri = http://CONTROLLER_IP:5000
+auth_url = http://CONTROLLER_IP:35357
+memcached_servers = CONTROLLER_IP:11211
+auth_type = password
+project_domain_name = Default
+user_domain_name = Default
+project_name = service
+username = nova
+password = NOVA_PASS
+
+[vnc]
+...
+vncserver_listen = $my_ip
+vncserver_proxyclient_address = $my_ip
+
+
+[glance]
+...
+api_servers = http://CONTROLLER_IP:9292
+
+[oslo_concurrency]
+...
+lock_path = /var/lib/nova/tmp
+```
+* Populate the Compute databases:
+```sh
+$ su -s /bin/sh -c "nova-manage api_db sync" nova
+$ su -s /bin/sh -c "nova-manage db sync" nova                             ## Ignore any messages in this output
+```
+### Step 5: Restart the Compute services:
+```sh
+$ service nova-api restart
+$ service nova-consoleauth restart
+$ service nova-scheduler restart
+$ service nova-conductor restart
+$ service nova-novncproxy restart
 ```
 
 
