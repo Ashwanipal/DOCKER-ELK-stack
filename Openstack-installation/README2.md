@@ -13,10 +13,22 @@ Follow the steps to create your own Openstack multinode cloud
 
 ### Step 1: Stop the firewall in your Operating system:
 
-
-### Step 2: Create a user "stack" to run DevStack:
+### Step 2: Install Chrony for implementation of NTP, to properly synchronize services among nodes
+  * IP address of Controller Node:  192.168.33.10
+  * IP address of Compute Node:     192.168.33.11
+  * IP address of Storage Node:     192.168.33.10
+## Install and configure components 
+controller node:
 ```sh
-sudo useradd -s /bin/bash -d /opt/stack -m stack
+apt install chrony
+
+vi /etc/chrony/chrony.conf
+>> server NTP_SERVER iburst ## Add the configuration
+
+vi /etc/chrony/chrony.conf
+>> allow 192.168.33.0/24 ## Add the configuration
+
+service chrony restart
 ```
 ### Step 3: Grant privileges to user stack:
 ```sh
