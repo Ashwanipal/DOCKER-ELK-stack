@@ -16,7 +16,7 @@ mysql> GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY 'KEYST
 ```sh
 apt install keystone                      ## install the packages:
 ```
-Edit the /etc/keystone/keystone.conf file and complete the following actions:
+* Edit the /etc/keystone/keystone.conf file and complete the following actions:
 ```sh
 vi /etc/keystone/keystone.conf
 >>  [database]                            ## In the [database] section, configure database access:
@@ -27,14 +27,14 @@ vi /etc/keystone/keystone.conf
     ...
     provider = fernet
 ```
-Populate the Identity service database & Initialize Fernet key repositories
+* Populate the Identity service database & Initialize Fernet key repositories
 ```sh
 su -s /bin/sh -c "keystone-manage db_sync" keystone                                 
 
 keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
 keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
 ```
-Bootstrap the Identity service & Replace ADMIN_PASS with a suitable password for an administrative user.
+* Bootstrap the Identity service & Replace ADMIN_PASS with a suitable password for an administrative user.
 ```sh
 keystone-manage bootstrap --bootstrap-password ADMIN_PASS \                         
   --bootstrap-admin-url http://CONTROLLER_IP:35357/v3/ \
@@ -43,10 +43,27 @@ keystone-manage bootstrap --bootstrap-password ADMIN_PASS \
   --bootstrap-region-id RegionOne
 ```
 
-### Step 3:
+### Step 3:Configure the Apache HTTP server
+* Edit the /etc/apache2/apache2.conf file and configure the ServerName option to controller node IP address:
 ```sh
-
+ServerName controller
 ```
+* Restart the Apache service and remove the default SQLite database:
+```sh
+service apache2 restart
+rm -f /var/lib/keystone/keystone.db
+```
+* Configure the administrative account
+```sh
+export OS_USERNAME=admin
+export OS_PASSWORD=ADMIN_PASS
+export OS_PROJECT_NAME=admin
+export OS_USER_DOMAIN_NAME=Default
+export OS_PROJECT_DOMAIN_NAME=Default
+export OS_AUTH_URL=http://CONTROLLER_IP:35357/v3
+export OS_IDENTITY_API_VERSION=3
+```
+
 ### Step 4: 
 ```sh
 
