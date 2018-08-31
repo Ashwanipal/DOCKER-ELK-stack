@@ -17,7 +17,7 @@ Follow the steps to create your own Openstack multinode cloud
   * IP address of Controller Node:  192.168.33.10
   * IP address of Compute Node:     192.168.33.11
   * IP address of Storage Node:     192.168.33.10
-## Install and configure components 
+#### Install and configure components 
 controller node:
 ```sh
 apt install chrony
