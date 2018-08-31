@@ -64,9 +64,38 @@ export OS_AUTH_URL=http://CONTROLLER_IP:35357/v3
 export OS_IDENTITY_API_VERSION=3
 ```
 
-### Step 4: 
+### Step 4: Create a domain, projects, users, and roles
+* Create the service & demo project
 ```sh
+openstack project create --domain default --description "Service Project" service
 
+openstack project create --domain default --description "Demo Project" demo
+```
+* Create the demo user & user role
+```sh
+openstack user create --domain default --password-prompt demo                   ## Create the demo user
+User Password:
+Repeat User Password:
++---------------------+----------------------------------+
+| Field               | Value                            |
++---------------------+----------------------------------+
+| domain_id           | default                          |
+| enabled             | True                             |
+| id                  | aeda23aa78f44e859900e22c24817832 |
+| name                | demo                             |
+| password_expires_at | None                             |
++---------------------+----------------------------------+
+
+openstack role create user                                                      ## Create the user role:
++-----------+----------------------------------+
+| Field     | Value                            |
++-----------+----------------------------------+
+| domain_id | None                             |
+| id        | 997ce8d05fc143ac97d83fdfb5998552 |
+| name      | user                             |
++-----------+----------------------------------+
+
+openstack role add --project demo --user demo user                              ## Add the user role to the demo project and user
 ```
 ### Step 5: 
 ```sh
