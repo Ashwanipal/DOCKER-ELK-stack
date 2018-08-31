@@ -180,7 +180,4 @@ openstack token issue
 
 ## Now your servers are ready to install and configure Image service
 
-### To install Image service please open the link
-
-    * <a href="#"> 2: Image service </a>
-
+ <a href="#"> install Image service </a>
