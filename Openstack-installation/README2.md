@@ -50,27 +50,45 @@ chronyc sources
 ```
 Run the same command on all other nodes:
 
-### Step 3: OpenStack packages(Perform these procedures on all nodes)
+### Step 3: OpenStack packages (Perform these procedures on all nodes)
 ```sh
 apt install software-properties-common    ## Enable the OpenStack repository
 add-apt-repository cloud-archive:newton   
+
 apt update && apt dist-upgrade            ## Upgrade the packages on your host
+
 apt install python-openstackclient        ## Install the OpenStack client
 ```
-### Step 4: SQL database(Perform these procedures on controller node)
+### Step 4: SQL database (Perform these procedures on controller node)
 ```sh
 apt install mysql-server python-pymysql   ## Install the packages & set the suitable password for your MySQL server
 
-vi vi /etc/mysql/mysql.conf.d/mysqld.cnf 
+vi /etc/mysql/mysql.conf.d/mysqld.cnf 
 >> bind-address = 0.0.0.0                 ## Change the bind address
 
 service mysql restart                     ## Restart the database service
 ```
-
-### Access your OpenStack by  URL:
+### Step 5: Message queue (Install and configure components on controller node)
 ```sh
-http://<HOST_IP>/dashboard
+apt install rabbitmq-server                 ## Install the package
+
+rabbitmqctl add_user openstack RABBIT_PASS  ## Add the openstack user: 
+OUTPUT >> Creating user "openstack" ...
+
+rabbitmqctl set_permissions openstack ".*" ".*" ".*"
+OUTPUT >> Setting permissions for user "openstack" in vhost "/" ...
 ```
+### Step 5: Memcached (Install and configure components on controller node)
+```sh
+apt install memcached python-memcache       ## Install the packages
+
+vi /etc/memcached.conf                      ## Configure memcached by editing configuration file
+>> -l 192.168.33.10                         ## Add the IP address of ypur controller node
+
+service memcached restart                   ## Restart the Memcached service:
+```
+
+### Now your servers are ready to innd configuration for openstack services
 
 
 
