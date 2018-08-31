@@ -178,17 +178,9 @@ openstack token issue
 ```
 
 
-## Now your servers are ready to install and configure Openstack services
+## Now your servers are ready to install and configure Image service
 
-### To install services one by one please open the links
+### To install Image service please open the link
 
-  * <a href="#"> 1: Identity service </a>
-  * <a href="#"> 2: Image service </a>
-  * <a href="#"> 3: Compute service </a>
-  * <a href="#"> 4: Networking service </a>
-  * <a href="#"> 5: Dashboard </a>
-  * <a href="#"> 6: Block Storage service </a>
-
-### NOTE: Please make sure to follow the steps as mentioned here
-
+    * <a href="#"> 2: Image service </a>
 
