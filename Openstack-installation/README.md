@@ -37,7 +37,7 @@ $ apt install chrony
 $ vi /etc/chrony/chrony.conf                    ## Remove all the configuration from /etc/chrony/chrony.conf and add the following
 >> server 192.168.33.10 iburst                ## Add your Controller server IP
 
-service chrony restart
+$ service chrony restart
 ```
 #### Verify operation
 ```sh
@@ -73,10 +73,10 @@ $ service mysql restart                     ## Restart the database service
 ```sh
 $ apt install rabbitmq-server                 ## Install the package
 
-rabbitmqctl add_user openstack RABBIT_PASS  ## Add the openstack user: 
+$ rabbitmqctl add_user openstack RABBIT_PASS  ## Add the openstack user: 
 OUTPUT >> Creating user "openstack" ...
 
-rabbitmqctl set_permissions openstack ".*" ".*" ".*"
+$ rabbitmqctl set_permissions openstack ".*" ".*" ".*"
 OUTPUT >> Setting permissions for user "openstack" in vhost "/" ...
 ```
 ### Step 5: Memcached (Install and configure components on controller node)
