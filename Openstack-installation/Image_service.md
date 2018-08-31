@@ -138,14 +138,63 @@ default_store = file
 filesystem_store_datadir = /var/lib/glance/images/
 
 ```
-
-### Step 5: 
+* Edit the /etc/glance/glance-registry.conf file and complete the following actions
 ```sh
+[database]                                                              ## In the [database] section, configure database access
+...
+connection = mysql+pymysql://glance:GLANCE_DBPASS@controller/glance
 
+[keystone_authtoken]                                                    ## configure Identity service access:
+...
+auth_uri = http://CONTROLLER_IP:5000
+auth_url = http://CONTROLLER_IP:35357
+memcached_servers = CONTROLLER_IP:11211
+auth_type = password
+project_domain_name = Default
+user_domain_name = Default
+project_name = service
+username = glance
+password = GLANCE_PASS
+
+[paste_deploy]
+...
+flavor = keystone
 ```
 
-## Now your servers are ready to install and configure Openstack services
-<a href="#"> 2: Image service </a>
+### Step 6: Populate the Image service database & Restart the Image services:
+```sh
+$ su -s /bin/sh -c "glance-manage db_sync" glance
+```
+```sh
+$ service glance-registry restart
+$ service glance-api restart
+```
+### Step 7: Verify operation
+* Source the admin credentials to gain access to admin-only CLI commands:
+```sh
+$ . admin-openrc
+```
+* Download the image
+```sh
+$ wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
+```
+* Upload the image to the Image service using the QCOW2 disk format,
+```sh
+openstack image create "cirros" \
+  --file cirros-0.3.4-x86_64-disk.img \
+  --disk-format qcow2 --container-format bare \
+  --public
+```
+* Confirm the uploaded image
+```sh
+$ openstack image list
+
++--------------------------------------+--------+--------+
+| ID                                   | Name   | Status |
++--------------------------------------+--------+--------+
+| 38047887-61a7-41ea-9b49-27987d5e8bb9 | cirros | active |
++--------------------------------------+--------+--------+
+```
+## Now your servers are ready to install and configure Openstack Compute service
+<a href="#"> 2: Compute service </a>
  
-
-
