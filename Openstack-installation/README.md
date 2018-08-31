@@ -19,59 +19,59 @@ Follow the steps to create your own Openstack multinode cloud
   * IP address of Storage Node:     192.168.33.12
 #### Install and configure components in controller node:
 ```sh
-apt install chrony
+$ apt install chrony
 
-vi /etc/chrony/chrony.conf                    ## Remove all the configuration from /etc/chrony/chrony.conf and add the following
->>  server 192.168.33.20 iburst               ## Add your Controller server IP
-    server 192.168.33.21 iburst               ## Add your Compute server IP
-    server 192.168.33.22 iburst               ## Add your Storage server IP
+# vi /etc/chrony/chrony.conf                  ## Remove all the configuration from /etc/chrony/chrony.conf and add the following
+>>  server 192.168.33.10 iburst               ## Add your Controller server IP
+    server 192.168.33.11 iburst               ## Add your Compute server IP
+    server 192.168.33.12 iburst               ## Add your Storage server IP
     allow 192.0.0.0/24
 
 
-service chrony restart
+$ service chrony restart
 ```
 #### Perform these steps on all other nodes.
 ```sh
-apt install chrony
+$ apt install chrony
 
-vi /etc/chrony/chrony.conf                    ## Remove all the configuration from /etc/chrony/chrony.conf and add the following
+$ vi /etc/chrony/chrony.conf                    ## Remove all the configuration from /etc/chrony/chrony.conf and add the following
 >> server 192.168.33.10 iburst                ## Add your Controller server IP
 
 service chrony restart
 ```
 #### Verify operation
 ```sh
-chronyc sources
-
-  210 Number of sources = 2
-  MS Name/IP address         Stratum Poll Reach LastRx Last sample
-  ===============================================================================
-  ^- 192.168.33.10                    2   7    12   137  -2814us[-3000us] +/-   43ms
-  ^* 192.168.33.11                    2   6   177    46    +17us[  -23us] +/-   68ms
+$ chronyc sources
+210 Number of sources = 3
+MS Name/IP address         Stratum Poll Reach LastRx Last sample
+===============================================================================
+^? 192.168.33.20                 0   7     0   10y     +0ns[   +0ns] +/-    0ns
+^? 192.168.33.21                 0   7     0   10y     +0ns[   +0ns] +/-    0ns
+^? 192.168.33.22                 0   7     0   10y     +0ns[   +0ns] +/-    0ns
 ```
 Run the same command on all other nodes:
 
 ### Step 3: OpenStack packages (Perform these procedures on all nodes)
 ```sh
-apt install software-properties-common    ## Enable the OpenStack repository
-add-apt-repository cloud-archive:newton   
+$ apt install software-properties-common    ## Enable the OpenStack repository
+$ add-apt-repository cloud-archive:newton   
 
-apt update && apt dist-upgrade            ## Upgrade the packages on your host
+$ apt update && apt dist-upgrade            ## Upgrade the packages on your host
 
-apt install python-openstackclient        ## Install the OpenStack client
+$ apt install python-openstackclient        ## Install the OpenStack client
 ```
 ### Step 4: SQL database (Perform these procedures on controller node)
 ```sh
-apt install mysql-server python-pymysql   ## Install the packages & set the suitable password for your MySQL server
+$ apt install mysql-server python-pymysql   ## Install the packages & set the suitable password for your MySQL server
 
-vi /etc/mysql/mysql.conf.d/mysqld.cnf 
+$ vi /etc/mysql/mysql.conf.d/mysqld.cnf 
 >> bind-address = 0.0.0.0                 ## Change the bind address
 
-service mysql restart                     ## Restart the database service
+$ service mysql restart                     ## Restart the database service
 ```
 ### Step 5: Message queue (Install and configure components on controller node)
 ```sh
-apt install rabbitmq-server                 ## Install the package
+$ apt install rabbitmq-server                 ## Install the package
 
 rabbitmqctl add_user openstack RABBIT_PASS  ## Add the openstack user: 
 OUTPUT >> Creating user "openstack" ...
@@ -81,12 +81,12 @@ OUTPUT >> Setting permissions for user "openstack" in vhost "/" ...
 ```
 ### Step 5: Memcached (Install and configure components on controller node)
 ```sh
-apt install memcached python-memcache       ## Install the packages
+$ apt install memcached python-memcache       ## Install the packages
 
-vi /etc/memcached.conf                      ## Configure memcached by editing configuration file
+$ vi /etc/memcached.conf                      ## Configure memcached by editing configuration file
 >> -l 192.168.33.10                         ## Add the IP address of ypur controller node
 
-service memcached restart                   ## Restart the Memcached service:
+$ service memcached restart                   ## Restart the Memcached service:
 ```
 
 ## Now your servers are ready to install and configure Openstack services
