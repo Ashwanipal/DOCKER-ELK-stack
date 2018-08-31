@@ -1,8 +1,7 @@
-<a href="https://github.com/Ashwanipal/DOCKER-ELK-stack"><img align="right" width="280" height="220" src="https://github.com/Ashwanipal/Shell-scripts/blob/master/2000px-The_OpenStack_logo.svg.png" /></a>
+## Identity service (keystone)
+The project that facilitates API client authentication, service discovery, distributed multi-tenant authorization, and auditing. It provides a central directory of users mapped to the OpenStack services they can access. It also registers endpoints for OpenStack services and acts as a common authentication system
 
-## This tutorial contains Creation & management of OpenStack multinode architecture 
-
-Follow the steps to create your own Openstack multinode cloud
+Follow the steps to setup Identity service in your openstack cluster
 
 ### Requirements:
    * It can be your virtual machines & you can creat VM's using vagrant
