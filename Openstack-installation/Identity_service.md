@@ -14,23 +14,29 @@ mysql> GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY 'KEYST
 
 ### Step 2: Install and configure components
 ```sh
-apt install keystone
+apt install keystone                      ## install the packages:
 ```
 ```sh
 vi /etc/keystone/keystone.conf
 >>  [database]                            ## In the [database] section, configure database access:
-    ...
-    connection = mysql+pymysql://keystone:KEYSTONE_DBPASS@controller/keystone
+    ...                                   ## Replace KEYSTONE_DBPASS with the password you chose for the database.
+    connection = mysql+pymysql://keystone:KEYSTONE_DBPASS@CONTROLLER_IP/keystone
 
     [token]                               ## In the [token] section, configure the Fernet token provider
     ...
     provider = fernet
 ```
 ```sh
-su -s /bin/sh -c "keystone-manage db_sync" keystone  ## Populate the Identity service database:
+su -s /bin/sh -c "keystone-manage db_sync" keystone                                 ## Populate the Identity service database:
 
 keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone     ## Initialize Fernet key repositories:
 keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
+
+keystone-manage bootstrap --bootstrap-password ADMIN_PASS \                         ## Bootstrap the Identity service:
+  --bootstrap-admin-url http://CONTROLLER_IP:35357/v3/ \                               ## Replace ADMIN_PASS with a suitable password for an administrative user.
+  --bootstrap-internal-url http://CONTROLLER_IP:35357/v3/ \
+  --bootstrap-public-url http://CONTROLLER_IP:5000/v3/ \
+  --bootstrap-region-id RegionOne
 ```
 
 ### Step 3:
