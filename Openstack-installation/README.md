@@ -1,69 +1,104 @@
 <a href="https://github.com/Ashwanipal/DOCKER-ELK-stack"><img align="right" width="280" height="220" src="https://github.com/Ashwanipal/Shell-scripts/blob/master/2000px-The_OpenStack_logo.svg.png" /></a>
 
-## How to install OpenStack on your local machine using Devstack
+## This tutorial contains Creation & management of OpenStack multinode architecture 
 
-Follow the steps to Install Openstack cloud in your local BOX
+Follow the steps to create your own Openstack multinode cloud
 
-### Minimum Requirements are:
-    * Support Ubuntu 16.04/17.04, Fedora 24/25, CentOS/RHEL 7
-    * 8 GB of memory
-    * At least 50GB of storage
+### Requirements:
+   * It can be your virtual machines & you can creat VM's using vagrant
+   * Support Ubuntu 16.04/14.04
+   * Controller Node: 4GB of RAM & 20GB storage
+   * Compute Node: 6GB of RAM & 20GB storage
+   * Storage Node: 2GB of RAM & 20GB storage
 
 ### Step 1: Stop the firewall in your Operating system:
 
-
-### Step 2: Create a user "stack" to run DevStack:
+### Step 2: Install Chrony for implementation of NTP, to properly synchronize services among nodes
+  * IP address of Controller Node:  192.168.33.10
+  * IP address of Compute Node:     192.168.33.11
+  * IP address of Storage Node:     192.168.33.12
+#### Install and configure components in controller node:
 ```sh
-sudo useradd -s /bin/bash -d /opt/stack -m stack
+apt install chrony
+
+vi /etc/chrony/chrony.conf
+>> server NTP_SERVER iburst ## Add the configuration
+
+vi /etc/chrony/chrony.conf
+>> allow 192.168.33.0/24 ## Add the configuration
+
+service chrony restart
 ```
-### Step 3: Grant privileges to user stack:
+#### Perform these steps on all other nodes.
 ```sh
-echo "stack ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/stack
+apt install chrony
+
+vi /etc/chrony/chrony.conf
+>> server 192.168.33.10 iburst ## Add the controller node IP address
+
+service chrony restart
 ```
-You should see output
+#### Verify operation
 ```sh
-stack ALL=(ALL) NOPASSWD: ALL
+chronyc sources
+
+  210 Number of sources = 2
+  MS Name/IP address         Stratum Poll Reach LastRx Last sample
+  ===============================================================================
+  ^- 192.168.33.10                    2   7    12   137  -2814us[-3000us] +/-   43ms
+  ^* 192.168.33.11                    2   6   177    46    +17us[  -23us] +/-   68ms
 ```
+Run the same command on all other nodes:
 
-### Step 4: Switch user and Download DevStack:
-
+### Step 3: OpenStack packages (Perform these procedures on all nodes)
 ```sh
-sudo su - stack
+apt install software-properties-common    ## Enable the OpenStack repository
+add-apt-repository cloud-archive:newton   
+
+apt update && apt dist-upgrade            ## Upgrade the packages on your host
+
+apt install python-openstackclient        ## Install the OpenStack client
 ```
+### Step 4: SQL database (Perform these procedures on controller node)
 ```sh
-git clone https://github.com/openstack-dev/devstack.git -b stable/pike devstack/
-```
+apt install mysql-server python-pymysql   ## Install the packages & set the suitable password for your MySQL server
 
-### Step 5: Change to the devstack directory:
+vi /etc/mysql/mysql.conf.d/mysqld.cnf 
+>> bind-address = 0.0.0.0                 ## Change the bind address
+
+service mysql restart                     ## Restart the database service
+```
+### Step 5: Message queue (Install and configure components on controller node)
 ```sh
-cd devstack
-```
+apt install rabbitmq-server                 ## Install the package
 
-### Step 6: Create the local.conf file with password and your host IP:
+rabbitmqctl add_user openstack RABBIT_PASS  ## Add the openstack user: 
+OUTPUT >> Creating user "openstack" ...
+
+rabbitmqctl set_permissions openstack ".*" ".*" ".*"
+OUTPUT >> Setting permissions for user "openstack" in vhost "/" ...
+```
+### Step 5: Memcached (Install and configure components on controller node)
 ```sh
-cat >  local.conf <<EOF
-[[local|localrc]]
-ADMIN_PASSWORD=secret
-DATABASE_PASSWORD=\$ADMIN_PASSWORD
-RABBIT_PASSWORD=\$ADMIN_PASSWORD
-SERVICE_PASSWORD=\$ADMIN_PASSWORD
-HOST_IP=10.0.2.15
-RECLONE=yes
-EOF
+apt install memcached python-memcache       ## Install the packages
+
+vi /etc/memcached.conf                      ## Configure memcached by editing configuration file
+>> -l 192.168.33.10                         ## Add the IP address of ypur controller node
+
+service memcached restart                   ## Restart the Memcached service:
 ```
 
-### Now install and run OpenStack:
-```sh
-./stack.sh
-```
+## Now your servers are ready to install and configure Openstack services
 
-### Access your OpenStack by  URL:
-```sh
-http://<HOST_IP>/dashboard
-```
+### To install services one by one please open the links
 
+  * <a href="#"> 1: Identity service </a>
+  * <a href="#"> 2: Image service </a>
+  * <a href="#"> 3: Compute service </a>
+  * <a href="#"> 4: Networking service </a>
+  * <a href="#"> 5: Dashboard </a>
+  * <a href="#"> 6: Block Storage service </a>
 
-
-
+### NOTE: Please make sure to follow the steps as mentioned here
 
 
