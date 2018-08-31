@@ -16,6 +16,7 @@ mysql> GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY 'KEYST
 ```sh
 apt install keystone                      ## install the packages:
 ```
+Edit the /etc/keystone/keystone.conf file and complete the following actions:
 ```sh
 vi /etc/keystone/keystone.conf
 >>  [database]                            ## In the [database] section, configure database access:
@@ -31,9 +32,11 @@ su -s /bin/sh -c "keystone-manage db_sync" keystone                             
 
 keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone     ## Initialize Fernet key repositories:
 keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
-
-keystone-manage bootstrap --bootstrap-password ADMIN_PASS \                         ## Bootstrap the Identity service:
-  --bootstrap-admin-url http://CONTROLLER_IP:35357/v3/ \                               ## Replace ADMIN_PASS with a suitable password for an administrative user.
+```
+Bootstrap the Identity service & Replace ADMIN_PASS with a suitable password for an administrative user.
+```sh
+keystone-manage bootstrap --bootstrap-password ADMIN_PASS \                         
+  --bootstrap-admin-url http://CONTROLLER_IP:35357/v3/ \
   --bootstrap-internal-url http://CONTROLLER_IP:35357/v3/ \
   --bootstrap-public-url http://CONTROLLER_IP:5000/v3/ \
   --bootstrap-region-id RegionOne
