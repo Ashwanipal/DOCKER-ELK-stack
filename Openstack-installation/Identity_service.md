@@ -27,10 +27,11 @@ vi /etc/keystone/keystone.conf
     ...
     provider = fernet
 ```
+Populate the Identity service database & Initialize Fernet key repositories
 ```sh
-su -s /bin/sh -c "keystone-manage db_sync" keystone                                 ## Populate the Identity service database:
+su -s /bin/sh -c "keystone-manage db_sync" keystone                                 
 
-keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone     ## Initialize Fernet key repositories:
+keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
 keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
 ```
 Bootstrap the Identity service & Replace ADMIN_PASS with a suitable password for an administrative user.
