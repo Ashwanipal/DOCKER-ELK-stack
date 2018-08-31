@@ -88,10 +88,17 @@ vi /etc/memcached.conf                      ## Configure memcached by editing co
 service memcached restart                   ## Restart the Memcached service:
 ```
 
-### Now your servers are ready to innd configuration for openstack services
+## Now your servers are ready to install and configure Openstack services
 
+### To install services one by one please open the links
 
+  #### 1: Identity service
+  #### 2: Image service
+  #### 3: Compute service
+  #### 4: Networking service
+  #### 5: Dashboard
+  #### 6: Block Storage service
 
-
+### NOTE: Please make sure to follow the steps as mentioned here
 
 
