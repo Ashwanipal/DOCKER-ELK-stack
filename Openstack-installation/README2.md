@@ -92,12 +92,12 @@ service memcached restart                   ## Restart the Memcached service:
 
 ### To install services one by one please open the links
 
-  <a href="#"> 1: Identity service </a>
-  <a href="#"> 2: Image service </a>
-  <a href="#"> 3: Compute service </a>
-  <a href="#"> 4: Networking service </a>
-  <a href="#"> 5: Dashboard </a>
-  <a href="#"> 6: Block Storage service </a>
+  <p href="#"> 1: Identity service </p>
+  <p href="#"> 2: Image service </p>
+  <p href="#"> 3: Compute service </p>
+  <p href="#"> 4: Networking service </p>
+  <p href="#"> 5: Dashboard </p>
+  <p href="#"> 6: Block Storage service </p>
 
 ### NOTE: Please make sure to follow the steps as mentioned here
 
