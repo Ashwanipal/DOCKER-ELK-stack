@@ -45,9 +45,9 @@ $ chronyc sources
 210 Number of sources = 3
 MS Name/IP address         Stratum Poll Reach LastRx Last sample
 ===============================================================================
-^? 192.168.33.20                 0   7     0   10y     +0ns[   +0ns] +/-    0ns
-^? 192.168.33.21                 0   7     0   10y     +0ns[   +0ns] +/-    0ns
-^? 192.168.33.22                 0   7     0   10y     +0ns[   +0ns] +/-    0ns
+^? 192.168.33.10                 0   7     0   10y     +0ns[   +0ns] +/-    0ns
+^? 192.168.33.11                 0   7     0   10y     +0ns[   +0ns] +/-    0ns
+^? 192.168.33.12                 0   7     0   10y     +0ns[   +0ns] +/-    0ns
 ```
 Run the same command on all other nodes:
 
