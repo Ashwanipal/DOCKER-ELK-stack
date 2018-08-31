@@ -92,12 +92,12 @@ service memcached restart                   ## Restart the Memcached service:
 
 ### To install services one by one please open the links
 
-  * <a href="https://github.com/Ashwanipal/DOCKER-ELK-stack/blob/master/Openstack-installation/Identity_service.md"> 1: Identity service </a>
-  * <a href="https://github.com/Ashwanipal/DOCKER-ELK-stack/blob/master/Openstack-installation/Image_service.md"> 2: Image service </a>
-  * <a href="#"> 3: Compute service </a>
-  * <a href="#"> 4: Networking service </a>
-  * <a href="#"> 5: Dashboard </a>
-  * <a href="#"> 6: Block Storage service </a>
+  * <a href="https://github.com/Ashwanipal/DOCKER-ELK-stack/blob/master/Openstack-installation/Identity_service.md"> 1: Identity service  (keystone)</a>
+  * <a href="https://github.com/Ashwanipal/DOCKER-ELK-stack/blob/master/Openstack-installation/Image_service.md"> 2: Image service (glance)</a>
+  * <a href="#"> 3: Compute service (nova)</a>
+  * <a href="#"> 4: Networking service (neutron)</a>
+  * <a href="#"> 5: Dashboard (openstack-dashboard)</a>
+  * <a href="#"> 6: Block Storage service (cinder)</a>
 
 ### NOTE: Please make sure to follow the steps as mentioned here
 
