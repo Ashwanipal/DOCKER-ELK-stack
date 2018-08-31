@@ -220,8 +220,43 @@ lock_path = /var/lib/nova/tmp
 ```
 * Due to a packaging bug, remove the log-dir option from the [DEFAULT] section.
 
+### Step 2: Determine whether your compute node supports hardware acceleration for virtual machines
+```sh
+$ egrep -c '(vmx|svm)' /proc/cpuinfo
+```
+### NOTE: If this command returns a value of one or greater, your compute node supports hardware acceleration which typically requires no additional configuration. If this command returns a value of zero, your compute node does not support hardware acceleration and you must configure libvirt to use QEMU instead of KVM.
 
-##   Install and configure compute node
+### Step 3(Optional): Edit the [libvirt] section in the /etc/nova/nova-compute.conf file
+```sh
+[libvirt]
+...
+virt_type = qemu
+```
 
-<a href="#"> 2: Compute service </a>
+### Step 4:Restart the Compute service
+```sh
+$ service nova-compute restart
+```
+### NOTE: If the nova-compute service fails to start, check /var/log/nova/nova-compute.log
+
+### Step 5: Verify the operation on Compute service.
+```sh
+$ . admin-openrc
+
+$ openstack compute service list
+
++----+--------------------+------------+----------+---------+-------+----------------------------+
+| Id | Binary             | Host       | Zone     | Status  | State | Updated At                 |
++----+--------------------+------------+----------+---------+-------+----------------------------+
+|  1 | nova-consoleauth   | controller | internal | enabled | up    | 2016-02-09T23:11:15.000000 |
+|  2 | nova-scheduler     | controller | internal | enabled | up    | 2016-02-09T23:11:15.000000 |
+|  3 | nova-conductor     | controller | internal | enabled | up    | 2016-02-09T23:11:16.000000 |
+|  4 | nova-compute       | compute    | nova     | enabled | up    | 2016-02-09T23:11:20.000000 |
++----+--------------------+------------+----------+---------+-------+----------------------------+
+```
+
+
+##   Now your compute service is up and running To setup Networking service open the link
+
+<a href="#"> Networking service </a>
  
