@@ -17,8 +17,7 @@ Follow the steps to create your own Openstack multinode cloud
   * IP address of Controller Node:  192.168.33.10
   * IP address of Compute Node:     192.168.33.11
   * IP address of Storage Node:     192.168.33.10
-#### Install and configure components 
-controller node:
+#### Install and configure components in controller node:
 ```sh
 apt install chrony
 
@@ -30,6 +29,27 @@ vi /etc/chrony/chrony.conf
 
 service chrony restart
 ```
+#### Perform these steps on all other nodes.
+```sh
+apt install chrony
+
+vi /etc/chrony/chrony.conf
+>> server 192.168.33.10 iburst ## Add the controller node IP address
+
+service chrony restart
+```
+#### Verify operation
+```sh
+chronyc sources
+
+  210 Number of sources = 2
+  MS Name/IP address         Stratum Poll Reach LastRx Last sample
+  ===============================================================================
+  ^- 192.168.33.10                    2   7    12   137  -2814us[-3000us] +/-   43ms
+  ^* 192.168.33.11                    2   6   177    46    +17us[  -23us] +/-   68ms
+```
+Run the same command on all other nodes:
+
 ### Step 3: Grant privileges to user stack:
 ```sh
 echo "stack ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/stack
