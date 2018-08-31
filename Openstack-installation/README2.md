@@ -16,7 +16,7 @@ Follow the steps to create your own Openstack multinode cloud
 ### Step 2: Install Chrony for implementation of NTP, to properly synchronize services among nodes
   * IP address of Controller Node:  192.168.33.10
   * IP address of Compute Node:     192.168.33.11
-  * IP address of Storage Node:     192.168.33.10
+  * IP address of Storage Node:     192.168.33.12
 #### Install and configure components in controller node:
 ```sh
 apt install chrony
