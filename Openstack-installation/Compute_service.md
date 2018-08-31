@@ -2,8 +2,8 @@
 OpenStack Compute is a major part of an Infrastructure-as-a-Service (IaaS) system. OpenStack Compute interacts with OpenStack Identity for authentication; OpenStack Image service for disk and server images; and OpenStack dashboard for the user and administrative interface. Image access is limited by projects, and by users; quotas are limited per project (the number of instances, for example). OpenStack Compute can scale horizontally on standard hardware, and download images to launch instances.
 
 ### Follow the steps to setup Openstack Compute service
-  * Install and configure controller node
-  * Install and configure compute node
+ * 1: Install and configure controller node
+ * 2: Install and configure compute node
 
 ## Install and configure controller node
 
@@ -61,10 +61,8 @@ $ openstack service create --name nova --description "OpenStack Compute" compute
 ```
 
 ### Step 3: Create the Compute service API endpoints
-* 
 ```sh
-$ openstack endpoint create --region RegionOne \
-  compute public http://CONTROLLER_IP:8774/v2.1/%\(tenant_id\)s
+$ openstack endpoint create --region RegionOne compute public http://CONTROLLER_IP:8774/v2.1/%\(tenant_id\)s
 
 +--------------+-------------------------------------------+
 | Field        | Value                                     |
@@ -80,8 +78,7 @@ $ openstack endpoint create --region RegionOne \
 | url          | http://CONTROLLER_IP:8774/v2.1/%(tenant_id)s |
 +--------------+-------------------------------------------+
 
-$ openstack endpoint create --region RegionOne \
-  compute internal http://CONTROLLER_IP:8774/v2.1/%\(tenant_id\)s
+$ openstack endpoint create --region RegionOne compute internal http://CONTROLLER_IP:8774/v2.1/%\(tenant_id\)s
 
 +--------------+-------------------------------------------+
 | Field        | Value                                     |
@@ -97,8 +94,7 @@ $ openstack endpoint create --region RegionOne \
 | url          | http://CONTROLLER_IP:8774/v2.1/%(tenant_id)s |
 +--------------+-------------------------------------------+
 
-$ openstack endpoint create --region RegionOne \
-  compute admin http://CONTROLLER_IP:8774/v2.1/%\(tenant_id\)s
+$ openstack endpoint create --region RegionOne compute admin http://CONTROLLER_IP:8774/v2.1/%\(tenant_id\)s
 
 +--------------+-------------------------------------------+
 | Field        | Value                                     |
@@ -179,7 +175,53 @@ $ service nova-conductor restart
 $ service nova-novncproxy restart
 ```
 
+## Now your Controller node is redy lets Install and configure compute node
 
-## Now your servers are ready to install and configure Openstack Compute service
+### Step 1: Install and configure components
+* Install the packages:
+```sh
+$ apt install nova-compute
+```
+* Configure packages
+```sh
+[DEFAULT]
+...
+transport_url = rabbit://openstack:RABBIT_PASS@CONTROLLER_IP
+auth_strategy = keystone
+my_ip = COMPUTE_IP                                             ## Add compute node IP addtess here
+use_neutron = True
+firewall_driver = nova.virt.firewall.NoopFirewallDriver
+
+[keystone_authtoken]
+auth_uri = http://CONTROLLER_IP:5000
+auth_url = http://CONTROLLER_IP:35357
+memcached_servers = CONTROLLER_IP:11211
+auth_type = password
+project_domain_name = Default
+user_domain_name = Default
+project_name = service
+username = nova
+password = NOVA_PASS
+
+[vnc]
+...
+enabled = True
+vncserver_listen = 0.0.0.0
+vncserver_proxyclient_address = $my_ip
+novncproxy_base_url = http://CONTROLLER_IP:6080/vnc_auto.html
+
+[glance]
+...
+api_servers = http://CONTROLLER_IP:9292
+
+[oslo_concurrency]
+...
+lock_path = /var/lib/nova/tmp
+```
+* Due to a packaging bug, remove the log-dir option from the [DEFAULT] section.
+
+
+##   Install and configure compute node
+
 <a href="#"> 2: Compute service </a>
  
