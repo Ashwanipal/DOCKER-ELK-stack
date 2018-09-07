@@ -5,7 +5,7 @@ services:
     build:
       context: ..
       dockerfile: ./ELK/Dockerfile.elasticsearch
-    image: ashwanikp42/elasticsearch:my_elk
+    image: ashwanikp42/my-privaterepo:elasticsearch
     container_name: elasticsearch_elk
     volumes:
       - ./ssl:/etc/ssl-elk/
@@ -19,7 +19,7 @@ services:
     build:
       context: ..
       dockerfile: ./ELK/Dockerfile.logstash
-    image: ashwanikp42/logstash:my_elk
+    image: ashwanikp42/my-privaterepo:logstash
     container_name: logstash_elk
     restart: always
     volumes:
@@ -32,7 +32,7 @@ services:
     build:
       context: ..
       dockerfile: ./ELK/Dockerfile.kibana
-    image: ashwanikp42/kibana:my_elk
+    image: ashwanikp42/my-privaterepo:kibana
     container_name: kibana_elk
     restart: always
     ports:
@@ -43,7 +43,7 @@ services:
     build:
       context: ..
       dockerfile: ./ELK/Dockerfile.nginx
-    image: ashwanikp42/nginx:my_elk
+    image: ashwanikp42/my-privaterepo:nginx
     container_name: nginx_elk
     restart: always
     volumes:
@@ -56,7 +56,7 @@ services:
 #    build:
 #      context: ..
 #      dockerfile: ./ELK/Dockerfile.clientVM
-#    image: client:my_elk
+#    image: ashwanikp42/my-privaterepo/client:my_elk
 #    container_name: client_VM
 #    restart: always
 #    volumes:
