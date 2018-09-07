@@ -1,0 +1,42 @@
+---
+ apiVersion: v1
+ kind: Service
+ metadata:
+   name: kibana-nodexpose
+   labels:
+     app: kibana-lb
+ spec:
+   type: NodePort
+   ports:
+     - port: 5601
+       nodePort: 30862
+   selector:
+     app: kibana-lb
+
+---
+ apiVersion: apps/v1beta2
+ kind: Deployment
+ metadata:
+   name: kibana-lb
+ spec:
+   replicas: 1
+   selector:
+     matchLabels:
+       app: kibana-lb
+   template:
+     metadata:
+       labels:
+         app: kibana-lb
+     spec:
+       containers:
+         - name: kibana
+           image: kibana:latest
+           ports:
+             - containerPort: 5601
+               name: http
+           command: ['sh', '-c', '/etc/init.d/kibana start && tail -f /dev/null']
+           volumeMounts:
+             - name: ssl
+               mountPath: /etc/ssl-elk/
+       volumes:
+         - name: ssl

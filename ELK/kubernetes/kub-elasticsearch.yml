@@ -1,0 +1,46 @@
+---
+ apiVersion: v1
+ kind: Service
+ metadata:
+   name: elasticsearch-nodexpose
+   labels:
+     app: elasticsearch-lb
+ spec:
+   type: NodePort
+   ports:
+     - port: 9200
+       nodePort: 30861
+   selector:
+     app: elasticsearch-lb
+
+---
+ apiVersion: apps/v1beta2
+ kind: Deployment
+ metadata:
+   name: elasticsearch-lb
+ spec:
+   replicas: 1
+   selector:
+     matchLabels:
+       app: elasticsearch-lb
+   template:
+     metadata:
+       labels:
+         app: elasticsearch-lb
+     spec:
+       containers:
+         - name: elasticsearch
+           image: elasticsearch:latest
+           terminationMessagePath: "/tmp/my-log"
+           ports:
+             - containerPort: 9200
+               name: http
+           command: ['bash', '-c', '/etc/init.d/elasticsearch start && tail -f /dev/null']
+#           volumeMounts:
+#             - name: ssl
+#               mountPath: /etc/ssl-elk/
+#       volumes:
+#         - name: ssl
+
+
+

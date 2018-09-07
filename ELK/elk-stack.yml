@@ -43,7 +43,7 @@ services:
     build:
       context: ..
       dockerfile: ./ELK/Dockerfile.nginx
-    image: nginx:latest
+    image: nginx:kibana
     container_name: nginx_elk
     restart: always
     volumes:
