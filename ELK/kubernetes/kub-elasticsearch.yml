@@ -2,7 +2,7 @@
  apiVersion: v1
  kind: Service
  metadata:
-   name: elasticsearch-nodexpose
+   name: elasticsearch
    labels:
      app: elasticsearch-lb
  spec:
@@ -30,12 +30,16 @@
      spec:
        containers:
          - name: elasticsearch
-           image: elasticsearch:latest
-           terminationMessagePath: "/tmp/my-log"
+           image: ashwanikp42/elasticsearch:my-elk
+#           terminationMessagePath: "/tmp/my-log"
            ports:
              - containerPort: 9200
                name: http
            command: ['bash', '-c', '/etc/init.d/elasticsearch start && tail -f /dev/null']
+#           resources:
+#             limits:
+#               memory: "2Gi"
+
 #           volumeMounts:
 #             - name: ssl
 #               mountPath: /etc/ssl-elk/
