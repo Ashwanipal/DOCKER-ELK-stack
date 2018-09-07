@@ -5,7 +5,7 @@ services:
     build:
       context: ..
       dockerfile: ./ELK/Dockerfile.elasticsearch
-    image: elasticsearch:latest
+    image: ashwanikp42/elasticsearch:my_elk
     container_name: elasticsearch_elk
     volumes:
       - ./ssl:/etc/ssl-elk/
@@ -19,7 +19,7 @@ services:
     build:
       context: ..
       dockerfile: ./ELK/Dockerfile.logstash
-    image: logstash:latest
+    image: ashwanikp42/logstash:my_elk
     container_name: logstash_elk
     restart: always
     volumes:
@@ -32,7 +32,7 @@ services:
     build:
       context: ..
       dockerfile: ./ELK/Dockerfile.kibana
-    image: kibana:latest
+    image: ashwanikp42/kibana:my_elk
     container_name: kibana_elk
     restart: always
     ports:
@@ -43,7 +43,7 @@ services:
     build:
       context: ..
       dockerfile: ./ELK/Dockerfile.nginx
-    image: nginx:kibana
+    image: ashwanikp42/nginx:my_elk
     container_name: nginx_elk
     restart: always
     volumes:
@@ -52,14 +52,14 @@ services:
       - "80:80"
     command: bash -c "/etc/init.d/nginx start && tail -f /dev/null"
 
-  client:
-    build:
-      context: ..
-      dockerfile: ./ELK/Dockerfile.clientVM
-    image: client:latest
-    container_name: client_VM
-    restart: always
-    volumes:
-      - /var/log:/var/log-host/
-    command: bash -c "/etc/init.d/filebeat start &&tail -f /dev/null"
+#  client:
+#    build:
+#      context: ..
+#      dockerfile: ./ELK/Dockerfile.clientVM
+#    image: client:my_elk
+#    container_name: client_VM
+#    restart: always
+#    volumes:
+#      - /var/log:/var/log-host/
+#    command: bash -c "/etc/init.d/filebeat start &&tail -f /dev/null"
 
